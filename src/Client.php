@@ -11,6 +11,7 @@ use FaritSlv\SumSub\Request\ApplicantDataRequest;
 use FaritSlv\SumSub\Request\ApplicantInfoRequest;
 use FaritSlv\SumSub\Request\ApplicantRequest;
 use FaritSlv\SumSub\Request\ApplicantStatusPendingRequest;
+use FaritSlv\SumSub\Request\CreateApplicantRequest;
 use FaritSlv\SumSub\Request\DocumentImageRequest;
 use FaritSlv\SumSub\Request\InspectionChecksRequest;
 use FaritSlv\SumSub\Request\RequestSignerInterface;
@@ -84,6 +85,26 @@ final class Client implements ClientInterface
         );
 
         return new AccessTokenResponse($decodedResponse['token'], $decodedResponse['userId']);
+    }
+
+    /**
+     * @throws BadResponseException
+     * @throws TransportException
+     */
+    public function createApplicant(CreateApplicantRequest $request): ApplicantDataResponse
+    {
+        $url = '/resources/applicants';
+        if ($request->getLevelName() !== null) {
+            $url .= '?levelName=' . $request->getLevelName();
+        }
+        return new ApplicantDataResponse($this->request(
+            'POST',
+            $url,
+            false,
+            true,
+            [],
+            $request->getStream()
+        ));
     }
 
     /**
