@@ -13,7 +13,7 @@ final class CreateApplicantRequest
 
     private $levelName;
 
-    public function __construct(array $data = [], ?string $levelName = null)
+    public function __construct(array $data, string $levelName)
     {
         $this->data = $data;
         $this->levelName = $levelName;
