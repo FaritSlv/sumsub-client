@@ -10,6 +10,7 @@ use FaritSlv\SumSub\Request\ApplicantDataRequest;
 use FaritSlv\SumSub\Request\ApplicantInfoRequest;
 use FaritSlv\SumSub\Request\ApplicantRequest;
 use FaritSlv\SumSub\Request\ApplicantStatusPendingRequest;
+use FaritSlv\SumSub\Request\CreateApplicantRequest;
 use FaritSlv\SumSub\Request\DocumentImageRequest;
 use FaritSlv\SumSub\Request\InspectionChecksRequest;
 use FaritSlv\SumSub\Response\AccessTokenResponse;
@@ -26,6 +27,14 @@ interface ClientInterface
      * @throws Exception
      */
     public function getAccessToken(AccessTokenRequest $request): AccessTokenResponse;
+
+    /**
+     * Creating an applicant
+     *
+     * @see https://developers.cyberity.ru/api-reference/#creating-an-applicant
+     * @throws Exception
+     */
+    public function createApplicant(CreateApplicantRequest $request): ApplicantDataResponse;
 
     /**
      * Get applicant data

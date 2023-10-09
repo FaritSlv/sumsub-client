@@ -14,6 +14,7 @@ use FaritSlv\SumSub\Request\ApplicantDataRequest;
 use FaritSlv\SumSub\Request\ApplicantInfoRequest;
 use FaritSlv\SumSub\Request\ApplicantRequest;
 use FaritSlv\SumSub\Request\ApplicantStatusPendingRequest;
+use FaritSlv\SumSub\Request\CreateApplicantRequest;
 use FaritSlv\SumSub\Request\DocumentImageRequest;
 use FaritSlv\SumSub\Request\RequestSignerInterface;
 use GuzzleHttp\Psr7\MultipartStream;
@@ -118,6 +119,81 @@ final class ClientTest extends Unit
         // Act && Assert
         $this->expectException(BadResponseException::class);
         $client->getAccessToken(new AccessTokenRequest('123456', 'test-level'));
+    }
+
+    public function testCreateApplicant(): void
+    {
+        // Arrange
+        /** @var ClientInterface $httpClient */
+        $httpClient = $this->makeEmpty(ClientInterface::class, [
+            'sendRequest' => Expected::once(
+                static function (RequestInterface $request): ResponseInterface {
+                    self::assertSame('/resources/applicants', $request->getUri()->getPath());
+                    self::assertSame('levelName=test-level', $request->getUri()->getQuery());
+
+                    return new Response(200, [], json_encode([
+                        'id' => '5f80e6b7155a6336271e4677',
+                        'createdAt' => '2020-10-09 22:39:51',
+                        'clientId' => 'cyberityClient',
+                        'inspectionId' => '5f80e6b7155a6336271e4678',
+                        'externalUserId' => 'someUniqueUserId',
+                        'fixedInfo' => [
+                            'placeOfBirth' => 'London',
+                            'country' => 'GBR',
+                        ],
+                        'email' => 'john.smith@cyberity.ru',
+                        'phone' => '+449112081223',
+                        'requiredIdDocs' => [
+                            'excludedCountries' => ['PRK'],
+                            'docSets' => [
+                                [
+                                    'idDocSetType' => 'IDENTITY',
+                                    'types' => [
+                                        'PASSPORT',
+                                        'DRIVERS',
+                                        'ID_CARD',
+                                        'RESIDENCE_PERMIT',
+                                    ],
+                                ],
+                                [
+                                    'idDocSetType' => 'SELFIE',
+                                    'types' => ['SELFIE'],
+                                    'videoRequired' => 'disabled',
+                                ],
+                            ],
+                        ],
+                        'review' => [
+                            'reprocessing' => false,
+                            'createDate' => '2020-10-09 22:39:51+0000',
+                            'reviewStatus' => 'init',
+                        ],
+                        'type' => 'individual',
+                    ]));
+                }
+            ),
+        ]);
+
+        $client = new Client($httpClient, $this->getRequestFactory(), $this->getRequestSigner());
+
+        // Act && Assert
+        $client->createApplicant(new CreateApplicantRequest([
+            'externalUserId' => 'someUniqueUserId',
+            'info' => [
+                'phone' => '+449112081223',
+            ],
+            'requiredIdDocs' => [
+                'docSets' => [
+                    [
+                        'idDocSetType' => 'IDENTITY',
+                        'types' => ['PASSPORT'],
+                    ],
+                    [
+                        'idDocSetType' => 'SELFIE',
+                        'types' => ['SELFIE'],
+                    ],
+                ],
+            ],
+        ], 'test-level'));
     }
 
     public function testGetApplicantDataByApplicantId(): void
