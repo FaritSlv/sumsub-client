@@ -1,6 +1,11 @@
 Under development
 -----------------
 
+0.8.0 (2023-10-09)
+-----------------
+- Feature: createApplicant() method support
+-----------------
+
 0.7.0 (2023-10-06)
 -----------------
 - Fix small logic errors
