@@ -207,12 +207,7 @@ final class Client implements ClientInterface
      */
     private function request(string $method, string $uri, bool $checkOk = false, $asJson = true, array $headers = [], ?StreamInterface $stream = null)
     {
-        $request = $this->createApiRequest($method, $this->baseUrl . $uri, $headers);
-
-        if ($stream !== null) {
-            $request = $request->withBody($stream);
-        }
-
+        $request = $this->createApiRequest($method, $this->baseUrl . $uri, $headers, $stream);
         $response = $this->sendApiRequest($request);
 
         if ($response->getStatusCode() >= 400) {
@@ -231,12 +226,16 @@ final class Client implements ClientInterface
         return $result;
     }
 
-    private function createApiRequest(string $method, string $uri, array $headers = []): RequestInterface
+    private function createApiRequest(string $method, string $uri, array $headers = [], ?StreamInterface $stream = null): RequestInterface
     {
         $request = $this->requestFactory
             ->createRequest($method, $uri)
             ->withHeader('Content-type', 'application/json')
             ->withHeader('Accept', 'application/json');
+
+        if ($stream !== null) {
+            $request = $request->withBody($stream);
+        }
 
         foreach ($headers as $key => $header) {
             $request = $request->withHeader($key, $header);

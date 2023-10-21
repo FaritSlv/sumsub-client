@@ -1,6 +1,10 @@
 Under development
 -----------------
 
+0.8.3 (2023-10-22)
+-----------------
+- Changing logic createApiRequest() method
+
 0.8.2 (2023-10-22)
 -----------------
 - Changing logic for BadResponseException
