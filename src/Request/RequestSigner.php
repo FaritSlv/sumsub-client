@@ -48,7 +48,7 @@ final class RequestSigner implements RequestSignerInterface
 
         $signature = hash_hmac(
             'sha256',
-            $currentTimestamp . $httpMethod . $url . $request->getBody()->getContents(),
+            $currentTimestamp . $httpMethod . $url . $request->getBody(),
             $this->secretKey
         );
 

@@ -131,7 +131,7 @@ final class ClientTest extends Unit
                     self::assertSame('/resources/applicants', $request->getUri()->getPath());
                     self::assertSame('levelName=test-level', $request->getUri()->getQuery());
 
-                    return new Response(200, [], json_encode([
+                    return new Response(201, [], json_encode([
                         'id' => '5f80e6b7155a6336271e4677',
                         'createdAt' => '2020-10-09 22:39:51',
                         'clientId' => 'cyberityClient',

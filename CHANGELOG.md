@@ -1,6 +1,10 @@
 Under development
 -----------------
 
+0.8.1 (2023-10-09)
+-----------------
+- Changing logic for BadResponseException
+
 0.8.0 (2023-10-09)
 -----------------
 - Feature: createApplicant() method support

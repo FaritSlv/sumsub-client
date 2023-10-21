@@ -215,7 +215,7 @@ final class Client implements ClientInterface
 
         $response = $this->sendApiRequest($request);
 
-        if ($response->getStatusCode() !== 200) {
+        if ($response->getStatusCode() >= 400) {
             throw new BadResponseException($response);
         }
 
@@ -235,6 +235,7 @@ final class Client implements ClientInterface
     {
         $request = $this->requestFactory
             ->createRequest($method, $uri)
+            ->withHeader('Content-type', 'application/json')
             ->withHeader('Accept', 'application/json');
 
         foreach ($headers as $key => $header) {
