@@ -447,8 +447,7 @@ final class ClientTest extends Unit
             'sendRequest' => Expected::once(static function (RequestInterface $request): ResponseInterface {
                 self::assertSame('/resources/applicants/123456/info/idDoc', $request->getUri()->getPath());
                 self::assertSame('', $request->getUri()->getQuery());
-                self::assertSame(1, (int) $request->getHeader('X-Return-Doc-Warnings')[0]);
-                self::assertSame('multipart/form-data', $request->getHeader('Content-Type')[0]);
+                self::assertTrue($request->getHeader('X-Return-Doc-Warnings')[0] === 'true');
 
                 return new Response(200, [], json_encode([
                     'idDocType' => 'PASSPORT',

@@ -102,7 +102,9 @@ final class Client implements ClientInterface
             $url,
             false,
             true,
-            [],
+            [
+                'Content-type' => 'application/json',
+            ],
             $request->getStream()
         ));
     }
@@ -173,14 +175,15 @@ final class Client implements ClientInterface
     public function getApplicantInfo(ApplicantInfoRequest $request): ApplicantDataResponse
     {
         $url = '/resources/applicants/' . $request->getApplicantId() . '/info/idDoc';
-        $headers = [
-            'Content-Type' => 'multipart/form-data',
-            'X-Return-Doc-Warnings' => $request->isReturnDocWarnings(),
-        ];
+        $headers = [];
+        if ($request->isReturnDocWarnings()) {
+            $headers['X-Return-Doc-Warnings'] = 'true';
+        }
+        $response = $this->request('POST', $url, false, false, $headers, $request->getPostData());
+        $result = $this->decodeResponse($response);
+        $result['x-image-Id'] = $response->getHeader('X-Image-Id')[0] ?? '';
 
-        return new ApplicantDataResponse(
-            $this->request('POST', $url, false, true, $headers, $request->getPostData())
-        );
+        return new ApplicantDataResponse($result);
     }
 
     public function getDocumentImage(DocumentImageRequest $request): DocumentImageResponse
@@ -229,9 +232,7 @@ final class Client implements ClientInterface
     private function createApiRequest(string $method, string $uri, array $headers = [], ?StreamInterface $stream = null): RequestInterface
     {
         $request = $this->requestFactory
-            ->createRequest($method, $uri)
-            ->withHeader('Content-type', 'application/json')
-            ->withHeader('Accept', 'application/json');
+            ->createRequest($method, $uri);
 
         if ($stream !== null) {
             $request = $request->withBody($stream);
